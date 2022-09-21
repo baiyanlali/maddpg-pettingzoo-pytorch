@@ -3,20 +3,24 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-from pettingzoo.mpe import simple_adversary_v2, simple_spread_v2, simple_tag_v2
+import pettingzoo
+from pettingzoo.mpe import simple_adversary_v2, simple_spread_v2, simple_tag_v2, simple_v2
 
 from MADDPG import MADDPG
-
+import IPFENV
 
 def get_env(env_name, ep_len=25):
     """create environment and get observation and action dimension of each agent in this environment"""
     new_env = None
     if env_name == 'simple_adversary_v2':
         new_env = simple_adversary_v2.parallel_env(max_cycles=ep_len)
+        env = pettingzoo.mpe.simple_v2.env()
     if env_name == 'simple_spread_v2':
         new_env = simple_spread_v2.parallel_env(max_cycles=ep_len)
     if env_name == 'simple_tag_v2':
         new_env = simple_tag_v2.parallel_env(max_cycles=ep_len)
+    if env_name == 'simple_ipf':
+        new_env = IPFENV.parallel_env(max_cycles = ep_len)
 
     new_env.reset()
     _dim_info = {}
@@ -31,7 +35,7 @@ def get_env(env_name, ep_len=25):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('env_name', type=str, default='simple_adversary_v2', help='name of the env',
-                        choices=['simple_adversary_v2', 'simple_spread_v2', 'simple_tag_v2'])
+                        choices=['simple_adversary_v2', 'simple_spread_v2', 'simple_tag_v2', 'simple_ipf'])
     parser.add_argument('--episode_num', type=int, default=30000,
                         help='total episode num during training procedure')
     parser.add_argument('--episode_length', type=int, default=25, help='steps per episode')

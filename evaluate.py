@@ -1,5 +1,6 @@
 import argparse
 import os
+import time
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,7 +12,7 @@ from main import get_env
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('env_name', type=str, default='simple_adversary_v2', help='name of the env',
-                        choices=['simple_adversary_v2', 'simple_spread_v2', 'simple_tag_v2'])
+                        choices=['simple_adversary_v2', 'simple_spread_v2', 'simple_tag_v2', 'simple_ipf'])
     parser.add_argument('folder', type=str, help='name of the folder where model is saved')
     parser.add_argument('--episode-num', type=int, default=10, help='total episode num during evaluation')
     parser.add_argument('--episode-length', type=int, default=50, help='steps per episode')
@@ -38,13 +39,17 @@ if __name__ == '__main__':
         while env.agents:  # interact with the env for an episode
             actions = maddpg.select_action(states)
             next_states, rewards, dones, infos = env.step(actions)
-            frame_list.append(Image.fromarray(env.render(mode='rgb_array')))
+            # frame_list.append(Image.fromarray(env.render(mode='rgb_array')))
+            # env.render(mode="rgb_array")
+            env.render(mode="human")
+            time.sleep(0.1)
+            # frame_list.append(Image.fromarray())
             states = next_states
 
             for agent_id, reward in rewards.items():  # update reward
                 agent_reward[agent_id] += reward
 
-        env.close()
+        # env.close()
         message = f'episode {episode + 1}, '
         # episode finishes, record reward
         for agent_id, reward in agent_reward.items():
@@ -52,8 +57,8 @@ if __name__ == '__main__':
             message += f'{agent_id}: {reward:>4f}; '
         print(message)
         # save gif
-        frame_list[0].save(os.path.join(gif_dir, f'out{gif_num + episode + 1}.gif'),
-                           save_all=True, append_images=frame_list[1:], duration=1, loop=0)
+        # frame_list[0].save(os.path.join(gif_dir, f'out{gif_num + episode + 1}.gif'),
+        #                    save_all=True, append_images=frame_list[1:], duration=1, loop=0)
 
     # training finishes, plot reward
     fig, ax = plt.subplots()
