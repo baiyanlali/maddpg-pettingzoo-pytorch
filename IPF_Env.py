@@ -42,11 +42,12 @@ class SimpleEnvIPF(AECEnv):
         self.height = 700
         self.screen = pygame.Surface([self.width, self.height])
         self.max_size = 1
-        self.game_font = pygame.freetype.Font(
-            os.path.join(os.path.dirname(__file__), "secrcode.ttf"), 24
-        )
+        # self.game_font = pygame.freetype.Font(
+        #     os.path.join(os.path.dirname(__file__), "secrcode.ttf"), 24
+        # )
 
         self.iter_count = 10
+        self.screen_color = np.zeros((self.width, self.height, 3), dtype=np.uint8)
 
         # Set up the drawing window
 
@@ -253,7 +254,7 @@ class SimpleEnvIPF(AECEnv):
         self._cumulative_rewards[cur_agent] = 0
         self._accumulate_rewards()
 
-        self.scenario.updateipf()
+        self.scenario.updateipf(self.world)
 
     def enable_render(self, mode="human"):
         if not self.renderOn and mode == "human":
@@ -273,7 +274,13 @@ class SimpleEnvIPF(AECEnv):
 
     def draw(self):
         # clear screen
-        self.screen.fill((255, 255, 255))
+        # self.screen.fill((255, 255, 255))
+        c = 255 * (self.scenario.ipfmap - self.scenario.ipfmap.min())/(self.scenario.ipfmap.max() -self.scenario.ipfmap.min())
+        self.screen_color[:,:,0] =255 * c
+        self.screen_color[:,:,1] =255 * c
+        self.screen_color[:,:,2] =255 * c
+        self.screen = pygame.surfarray.make_surface(self.screen_color)
+
         # x = np.arange(0, 300)
         # y = np.arange(0, 300)
         # X, Y = np.meshgrid(x, y)

@@ -11,10 +11,10 @@ import IPFENV
 
 def get_env(env_name, ep_len=25):
     """create environment and get observation and action dimension of each agent in this environment"""
+    print(f'set env')
     new_env = None
     if env_name == 'simple_adversary_v2':
         new_env = simple_adversary_v2.parallel_env(max_cycles=ep_len)
-        env = pettingzoo.mpe.simple_v2.env()
     if env_name == 'simple_spread_v2':
         new_env = simple_spread_v2.parallel_env(max_cycles=ep_len)
     if env_name == 'simple_tag_v2':
@@ -65,9 +65,11 @@ if __name__ == '__main__':
 
     step = 0  # global step counter
     agent_num = env.num_agents
+    print(f"start to train")
     # reward of each episode of each agent
     episode_rewards = {agent_id: np.zeros(args.episode_num) for agent_id in env.agents}
     for episode in range(args.episode_num):
+        # print(f'episode: {episode}')
         obs = env.reset()
         agent_reward = {agent_id: 0 for agent_id in env.agents}  # agent reward of the current episode
         while env.agents:  # interact with the env for an episode
